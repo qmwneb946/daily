@@ -1,7 +1,7 @@
 # 2025-02-18 提交记录
 
  | ID | 时间 | 题目 | 比赛 | 难度 | 标签 | 结果 | 测试用例 | 运行时间 | 内存消耗 |
- |----|------|-----|-----|------|-----|------|---------|--------|----------|
+ |:----:|:------:|:-----:|:-----:|:------:|:-----:|:------:|:---------:|:--------:|:----------:|
  | 306652288 | 2025-02-18  19:21:43 | [Wish I Knew How to Sort](https://codeforces.com/problemset/problem/1753/C) | 1753 | 2000 | dp, math, probabilities | OK | 9 | 171ms | 100KB |
  | 306648489 | 2025-02-18  18:51:00 | [Hyperregular Bracket Strings](https://codeforces.com/problemset/problem/1830/C) | 1830 | 2400 | combinatorics, greedy, hashing, math, number theory, sortings | OK | 23 | 358ms | 23300KB |
  | 306648409 | 2025-02-18  18:50:13 | [Hyperregular Bracket Strings](https://codeforces.com/problemset/problem/1830/C) | 1830 | 2400 | combinatorics, greedy, hashing, math, number theory, sortings | RUNTIME_ERROR | 1 | 31ms | 800KB |
