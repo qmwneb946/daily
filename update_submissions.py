@@ -77,7 +77,7 @@ def update_daily_log(submissions):
     os.makedirs("logs",  exist_ok=True)
     with open(filename, "w", encoding="utf-8") as f:
         f.write("\n".join(content)) 
-    filename = "READMD.md"
+    filename = "README.md"
     with open(filename, "w", encoding="utf-8") as f:
         f.write("\n".join(content)) 
  
