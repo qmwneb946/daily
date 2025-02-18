@@ -1,0 +1,76 @@
+name: Update Codeforces Submissions
+
+on:
+  schedule:
+    # 每 5 分钟运行一次
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update_submissions:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Get Codeforces submissions
+      id: get_submissions
+      run: |
+        # 使用 curl 获取 Codeforces 提交记录
+        curl -s "https://codeforces.com/api/user.status?handle=qmwneb946" -o submissions.json
+
+    - name: Format and update submissions in Markdown
+      id: format_markdown
+      run: |
+        # 读取提交记录并格式化为 Markdown
+        python3 -c '
+import json
+from datetime import datetime
+
+# 读取提交记录
+with open("submissions.json", "r") as f:
+    data = json.load(f)
+
+# 获取今天日期
+today = datetime.now().strftime("%Y-%m-%d")
+filename = f"{today}.md"
+
+# 打开并写入到今天的 md 文件
+with open(filename, "w") as f:
+    f.write(f"# Codeforces Submissions for {today}\n\n")
+    for submission in data["result"]:
+        problem = submission["problem"]
+        verdict = submission["verdict"]
+        language = submission["programmingLanguage"]
+        contest_id = submission["contestId"]
+        problem_name = problem["name"]
+        problem_index = problem["index"]
+        f.write(f"## {problem_name} ({problem_index})\n")
+        f.write(f"- **Verdict**: {verdict}\n")
+        f.write(f"- **Language**: {language}\n")
+        f.write(f"- **Contest ID**: {contest_id}\n")
+        f.write(f"- **Tags**: {', '.join(problem['tags'])}\n")
+        f.write("\n")
+        '
+
+    - name: Commit and push changes
+      run: |
+        # 提交更改并推送到仓库
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        
+        git add . # 添加所有更改的文件
+        git commit -m "Update submissions for $(date +'%Y-%m-%d')" || echo "No changes to commit"
+        git push origin main
+
+    - name: Update README
+      run: |
+        # 将今天的更新添加到 README.md 中
+        TODAY_FILE=$(date +'%Y-%m-%d').md
+        echo "## Latest Submissions on $(date +'%Y-%m-%d')" >> README.md
+        echo "See the full list of submissions in the [${TODAY_FILE}](./${TODAY_FILE}) file." >> README.md
+
+        git add README.md
+        git commit -m "Update README with latest submissions"
+        git push origin main
