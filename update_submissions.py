@@ -77,44 +77,11 @@ def update_daily_log(submissions):
     os.makedirs("logs",  exist_ok=True)
     with open(filename, "w", encoding="utf-8") as f:
         f.write("\n".join(content)) 
- 
-def update_readme(submissions):
-    readme_path = "README.md" 
-    if not os.path.exists(readme_path): 
-        return 
-    
-    with open(readme_path, "r", encoding="utf-8") as f:
-        content = f.read() 
-    
-    table = ["## 最新提交记录\n"]
-    if submissions:
-        table.append(" | 题目 | 比赛 | 难度 | 结果 | 提交时间 |")
-        table.append(" |------|------|------|------|----------|")
-        for sub in submissions[:5]:
-            problem_link = f"[{sub['problem']}](https://codeforces.com/problemset/problem/{sub['contest']}/{sub['index']})" 
-            row = [
-                problem_link,
-                sub["contest"],
-                sub["rating"],
-                sub["verdict"],
-                sub["time"]
-            ]
-            table.append(" | " + " | ".join(map(str, row)) + " |")
-    else:
-        table.append(" 暂无最近提交")
-    
-    new_content = re.sub( 
-        r"<!-- SUBMISSIONS_START -->.*<!-- SUBMISSIONS_END -->",
-        f"<!-- SUBMISSIONS_START -->\n" + "\n".join(table) + "\n<!-- SUBMISSIONS_END -->",
-        content,
-        flags=re.DOTALL 
-    )
-    
-    with open(readme_path, "w", encoding="utf-8") as f:
-        f.write(new_content) 
+    filename = "READMD.md"
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write("\n".join(content)) 
  
 if __name__ == "__main__":
     submissions = get_submissions()
     processed = process_submissions(submissions)
     update_daily_log(processed)
-    update_readme(processed)
