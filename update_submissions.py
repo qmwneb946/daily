@@ -55,7 +55,7 @@ def update_daily_log(submissions):
     content = [f"# {date_str} 提交记录\n"]
     if submissions:
         content.append(" | ID | 时间 | 题目 | 比赛 | 难度 | 标签 | 结果 | 测试用例 | 运行时间 | 内存消耗 |")
-        content.append(" |----|------|-----|-----|------|-----|------|---------|--------|----------|")
+        content.append(" |:----:|:------:|:-----:|:-----:|:------:|:-----:|:------:|:---------:|:--------:|:----------:|")
         for sub in submissions:
             problem_link = f"[{sub['problem']}](https://codeforces.com/problemset/problem/{sub['contest']}/{sub['index']})" 
             row = [
