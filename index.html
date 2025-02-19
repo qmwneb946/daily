@@ -3,33 +3,121 @@
 <head>
     <title>Codeforces 今日提交记录</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        #filters { margin-bottom: 15px; }
-        .filter { margin: 5px; padding: 5px; width: 120px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        a { color: #2196F3; text-decoration: none; }
+        /* 全局字体和页边距 */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 40px;
+            background-color: #f4f4f9;
+        }
+
+        /* 筛选框容器样式 */
+        #filters {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* 单个筛选输入框样式 */
+       .filter {
+            margin: 0;
+            padding: 10px;
+            width: 150px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        /* 输入框聚焦效果 */
+       .filter:focus {
+            border-color: #2196F3;
+            outline: none;
+        }
+
+        /* 表格样式 */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 表头样式 */
+        th {
+            background-color: #2196F3;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #1976D2;
+        }
+
+        /* 表格单元格样式 */
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        /* 奇偶行背景色区分 */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* 表格行悬停效果 */
+        tr:hover {
+            background-color: #e3f2fd;
+        }
+
+        /* 链接样式 */
+        a {
+            color: #2196F3;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        /* 链接悬停效果 */
+        a:hover {
+            color: #1565C0;
+            text-decoration: underline;
+        }
+
+        /* 重置按钮样式 */
+        #resetButton {
+            padding: 10px 20px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 重置按钮悬停效果 */
+        #resetButton:hover {
+            background-color: #1976D2;
+        }
     </style>
 </head>
 <body>
     <h2>今日提交记录</h2>
     <div id="filters"></div>
+    <button id="resetButton">重置筛选</button>
     <table id="dataTable">
         <thead></thead>
         <tbody></tbody>
     </table>
- 
+
     <script>
         function loadCSV() {
+            // 从 CSV 文件中加载数据
             fetch('today.csv') 
-                .then(response => response.text()) 
-                .then(data => {
+              .then(response => response.text()) 
+              .then(data => {
+                    // 分割数据为行，并移除表头行
                     const rows = data.split('\n').slice(1); 
+                    // 解析表头
                     const headers = data.split('\n')[0].split(','); 
-                    
-                    // 创建筛选输入框 
+
+                    // 创建筛选输入框
                     const filterDiv = document.getElementById('filters'); 
                     headers.forEach(header  => {
                         const input = document.createElement('input'); 
@@ -40,8 +128,8 @@
                         input.addEventListener('input',  filterTable);
                         filterDiv.appendChild(input); 
                     });
- 
-                    // 创建表头 
+
+                    // 创建表头
                     const thead = document.querySelector('#dataTable  thead');
                     const headerRow = document.createElement('tr'); 
                     headers.forEach(header  => {
@@ -50,8 +138,8 @@
                         headerRow.appendChild(th); 
                     });
                     thead.appendChild(headerRow); 
- 
-                    // 填充数据 
+
+                    // 填充数据
                     const tbody = document.querySelector('#dataTable  tbody');
                     rows.forEach(row  => {
                         const cols = row.split(','); 
@@ -60,8 +148,8 @@
                             const td = document.createElement('td'); 
                             if (headers[index] === 'problem') {
                                 const contestId = cols[3];
-                                const index = cols[4];
-                                td.innerHTML  = `<a href="https://codeforces.com/problemset/problem/${contestId}/${index}"  target="_blank">${col}</a>`;
+                                const indexId = cols[4];
+                                td.innerHTML  = `<a href="https://codeforces.com/problemset/problem/${contestId}/${indexId}"  target="_blank">${col}</a>`;
                             } else {
                                 td.textContent  = col;
                             }
@@ -71,30 +159,41 @@
                     });
                 });
         }
- 
+
         function filterTable(event) {
             const column = event.target.getAttribute('data-column'); 
             const filterValue = event.target.value.toLowerCase(); 
             const rows = document.querySelectorAll('#dataTable  tbody tr');
- 
+
             rows.forEach(row  => {
                 const cell = row.querySelector(`td:nth-child(${Array.from(row.parentNode.rows[0].cells).findIndex(c  => c.textContent  === column) + 1})`);
                 let cellValue = cell.textContent.toLowerCase(); 
-                
-                // 特殊处理难度筛选 
+
+                // 特殊处理难度筛选
                 if (column === 'rating') {
                     if (filterValue.includes('-'))  {
                         const [min, max] = filterValue.split('-').map(Number); 
                         const rating = parseInt(cellValue) || 0;
-                        row.style.display  = (rating >= min && rating <= max) ? '' : 'none';
+                        row.style.display  = (rating >= min && rating <= max)? '' : 'none';
                         return;
                     }
                 }
-                
-                row.style.display  = cellValue.includes(filterValue)  ? '' : 'none';
+
+                row.style.display  = cellValue.includes(filterValue)?  '' : 'none';
             });
         }
- 
+
+        // 重置筛选按钮功能
+        const resetButton = document.getElementById('resetButton'); 
+        resetButton.addEventListener('click',  () => {
+            const filters = document.querySelectorAll('.filter'); 
+            filters.forEach(filter  => {
+                filter.value  = '';
+                filterTable({ target: filter });
+            });
+        });
+
+        // 页面加载完成后加载 CSV 数据
         window.onload  = loadCSV;
     </script>
 </body>
