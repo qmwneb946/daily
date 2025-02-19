@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Codeforces 今日提交记录</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #filters { margin-bottom: 15px; }
+        .filter { margin: 5px; padding: 5px; width: 120px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        a { color: #2196F3; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h2>今日提交记录</h2>
+    <div id="filters"></div>
+    <table id="dataTable">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+ 
+    <script>
+        function loadCSV() {
+            fetch('today.csv') 
+                .then(response => response.text()) 
+                .then(data => {
+                    const rows = data.split('\n').slice(1); 
+                    const headers = data.split('\n')[0].split(','); 
+                    
+                    // 创建筛选输入框 
+                    const filterDiv = document.getElementById('filters'); 
+                    headers.forEach(header  => {
+                        const input = document.createElement('input'); 
+                        input.type  = 'text';
+                        input.placeholder  = `筛选 ${header}`;
+                        input.className  = 'filter';
+                        input.setAttribute('data-column',  header);
+                        input.addEventListener('input',  filterTable);
+                        filterDiv.appendChild(input); 
+                    });
+ 
+                    // 创建表头 
+                    const thead = document.querySelector('#dataTable  thead');
+                    const headerRow = document.createElement('tr'); 
+                    headers.forEach(header  => {
+                        const th = document.createElement('th'); 
+                        th.textContent  = header;
+                        headerRow.appendChild(th); 
+                    });
+                    thead.appendChild(headerRow); 
+ 
+                    // 填充数据 
+                    const tbody = document.querySelector('#dataTable  tbody');
+                    rows.forEach(row  => {
+                        const cols = row.split(','); 
+                        const tr = document.createElement('tr'); 
+                        cols.forEach((col,  index) => {
+                            const td = document.createElement('td'); 
+                            if (headers[index] === 'problem') {
+                                const contestId = cols[3];
+                                const index = cols[4];
+                                td.innerHTML  = `<a href="https://codeforces.com/problemset/problem/${contestId}/${index}"  target="_blank">${col}</a>`;
+                            } else {
+                                td.textContent  = col;
+                            }
+                            tr.appendChild(td); 
+                        });
+                        tbody.appendChild(tr); 
+                    });
+                });
+        }
+ 
+        function filterTable(event) {
+            const column = event.target.getAttribute('data-column'); 
+            const filterValue = event.target.value.toLowerCase(); 
+            const rows = document.querySelectorAll('#dataTable  tbody tr');
+ 
+            rows.forEach(row  => {
+                const cell = row.querySelector(`td:nth-child(${Array.from(row.parentNode.rows[0].cells).findIndex(c  => c.textContent  === column) + 1})`);
+                let cellValue = cell.textContent.toLowerCase(); 
+                
+                // 特殊处理难度筛选 
+                if (column === 'rating') {
+                    if (filterValue.includes('-'))  {
+                        const [min, max] = filterValue.split('-').map(Number); 
+                        const rating = parseInt(cellValue) || 0;
+                        row.style.display  = (rating >= min && rating <= max) ? '' : 'none';
+                        return;
+                    }
+                }
+                
+                row.style.display  = cellValue.includes(filterValue)  ? '' : 'none';
+            });
+        }
+ 
+        window.onload  = loadCSV;
+    </script>
+</body>
+</html>
