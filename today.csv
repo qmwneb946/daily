@@ -1,2 +1,2 @@
 id,time,problem,contest,index,rating,tags,verdict,tests,runtime,memory
-306821465,2025-02-19  13:22:23,Stars,213,D,2300,"constructive algorithms, geometry",TESTING,0,0ms,0KB
+306821465,2025-02-19  13:22:23,Stars,213,D,2300,"constructive algorithms, geometry",OK,100,124ms,0KB
