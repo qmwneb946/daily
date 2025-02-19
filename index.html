@@ -1,215 +1,85 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codeforces 提交分析系统</title>
-    <style>
-        /* 现代表格系统 */
-        .dashboard {
-            max-width: 98vw;
-            padding: 20px;
-            font-family: 'Segoe UI', system-ui;
-        }
- 
-        .date-header {
-            font-size: 1.4em;
-            color: #2c3e50;
-            margin: 0 0 25px;
-            padding: 15px 25px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            display: inline-flex;
-            gap: 15px;
-        }
- 
-        .table-container {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-        }
- 
-        table {
-            table-layout: auto;
-            width: max-content;
-            min-width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
- 
-        th, td {
-            padding: 14px 20px;
-            text-align: center;
-            vertical-align: middle;
-            white-space: nowrap;
-            border-bottom: 1px solid #f0f0f0;
-        }
- 
-        th {
-            background: #2196F3;
-            color: white;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            position: sticky;
-            top: 0;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
- 
-        tr:nth-child(even) {
-            background: #fafcff;
-        }
- 
-        a.problem-link  {
-            color: #1565C0;
-            font-weight: 500;
-            transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
-            text-decoration: none;
-        }
- 
-        a.problem-link:hover  {
-            color: #0D47A1;
-            text-decoration: underline;
-            transform: translateX(2px);
-        }
- 
-        /* 响应式优化 */
-        @media (max-width: 768px) {
-            .dashboard {
-                padding: 10px;
-            }
-            
-            th, td {
-                padding: 12px 15px;
-                font-size: 0.9em;
-            }
- 
-            .date-header {
-                font-size: 1.1em;
-                padding: 12px 20px;
-            }
-        }
-    </style>
+<title>Codeforces 今日提交记录</title>
+<style>
+/* 新增自适应表格样式 */
+table {
+  table-layout: auto; /* 核心自适应设置[2]() */
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: auto; /* 响应式溢出滚动[5]() */
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+th, td {
+  white-space: nowrap; /* 防止内容换行 */
+  min-width: 120px; /* 最小列宽 */
+  max-width: 400px; /* 最大列宽 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* 原有样式保留 */
+body { font-family: 'Segoe UI', sans-serif; margin:40px; background:#f4f4f9; }
+th { background:#2196F3; color:white; padding:12px; }
+tr:nth-child(even) { background:#f9f9f9; }
+</style>
 </head>
 <body>
-    <div class="dashboard">
-        <div class="date-header">
-            <span>📈 实时提交记录</span>
-            <span id="currentDate"></span>
-        </div>
-        
-        <div class="table-container">
-            <table id="dataTable">
-                <thead></thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
+<h2>今日提交记录</h2>
+<table id="dataTable">
+  <thead></thead>
+  <tbody></tbody>
+</table>
  
 <script>
-// 增强版CSV解析器 
-const parseCSV = (text) => {
-    const rows = text.split(/\r?\n/).filter(row  => row.trim()); 
-    const headers = rows[0].split(',').map(h => h.trim()); 
-    
-    const data = rows.slice(1).map(row  => {
-        const cells = row.match(/(?:\"([^\"]*)\" |([^,]*))(?:,|$)/g) || [];
-        const cleanCells = cells.map(cell  => {
-            return cell.replace(/^\" |\"$|,$/g, '').trim();
-        });
-        
-        return headers.reduce((obj,  header, index) => {
-            obj[header] = cleanCells[index] || '';
-            return obj;
-        }, {});
+function parseCSV(csv) {
+  const rows = csv.split(/\r?\n/); 
+  const headers = rows[0].split(',').map(h => h.trim()); 
+  const data = [];
+  
+  for (let i=1; i<rows.length;  i++) {
+    const cells = rows[i].match(/(".*?"|[^",]+)(?=,|$)/g) || [];
+    const obj = {};
+    headers.forEach((h,  idx) => {
+      obj[h] = (cells[idx] || '').replace(/^"(.*)"$/, '$1').trim();
     });
+    data.push(obj); 
+  }
+  return { headers, data };
+}
  
-    return { headers, data };
-};
- 
-// 表格渲染引擎 
-const renderTable = ({ headers, data }) => {
+function buildTable() {
+  fetch('today.csv').then(r  => r.text()).then(csv  => {
+    const { headers, data } = parseCSV(csv);
     const table = document.getElementById('dataTable'); 
-    table.innerHTML  = ''; // 清空旧数据 
- 
-    // 构建智能表头 
+    
+    // 构建表头 
     const thead = table.createTHead(); 
     const headerRow = thead.insertRow(); 
-    headers.forEach(header  => {
-        const th = document.createElement('th'); 
-        th.textContent  = header;
-        th.setAttribute('data-column',  header.toLowerCase()); 
-        headerRow.appendChild(th); 
+    headers.forEach(h  => {
+      const th = document.createElement('th'); 
+      th.textContent  = h;
+      headerRow.appendChild(th); 
     });
  
-    // 动态填充数据 
+    // 填充数据 
     const tbody = table.createTBody(); 
-    data.forEach(record  => {
-        const row = tbody.insertRow(); 
-        headers.forEach(header  => {
-            const cell = row.insertCell(); 
-            const value = record[header];
- 
-            switch(header.toLowerCase())  {
-                case 'problem':
-                    cell.innerHTML  = `<a class="problem-link" 
-                        href="https://codeforces.com/problemset/problem/${record.contest}/${record.index}" 
-                        target="_blank">${value}</a>`;
-                    break;
-                case 'tags':
-                    cell.innerHTML  = value.split(',').map(tag  => 
-                        `<span class="tag">${tag.trim()}</span>` 
-                    ).join(' · ');
-                    break;
-                default:
-                    cell.textContent  = value;
-            }
-        });
+    data.forEach(row  => {
+      const tr = tbody.insertRow(); 
+      headers.forEach(h  => {
+        const td = tr.insertCell(); 
+        if(h === 'problem') {
+          td.innerHTML  = `<a href="https://codeforces.com/problemset/problem/${row.contest}/${row.index}"  
+                            target="_blank">${row[h]}</a>`;
+        } else {
+          td.textContent  = row[h];
+        }
+      });
     });
-};
+  });
+}
  
-// 智能日期系统 
-const updateDateTime = () => {
-    const date = new Date();
-    const options = { 
-        year: 'numeric', 
-        month: '2-digit', 
-        day: '2-digit',
-        weekday: 'short',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false 
-    };
-    
-    document.getElementById('currentDate').textContent  = 
-        new Intl.DateTimeFormat('zh-CN', options).format(date)
-        .replace(/(上午|下午)/, '')
-        .replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
-};
- 
-// 系统初始化 
-window.addEventListener('DOMContentLoaded',  () => {
-    // 启动时间更新 
-    updateDateTime();
-    setInterval(updateDateTime, 1000 * 30); // 每30秒更新 
- 
-    // 加载数据 
-    fetch('today.csv') 
-        .then(res => {
-            if (!res.ok)  throw new Error(`HTTP error! status: ${res.status}`); 
-            return res.text(); 
-        })
-        .then(text => {
-            const { headers, data } = parseCSV(text);
-            renderTable({ headers, data });
-        })
-        .catch(err => {
-            console.error(' 系统初始化失败:', err);
-            document.getElementById('dataTable').innerHTML  = 
-                `<tr><td colspan="${headers.length}">⚠️  数据加载失败，请刷新重试</td></tr>`;
-        });
-});
+window.onload  = buildTable;
 </script>
 </body>
 </html>
