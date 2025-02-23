@@ -10,7 +10,7 @@ BEIJING_TZ = pytz.timezone('Asia/Shanghai')
  
 def get_submissions():
     try:
-        response = requests.get(API_URL,  timeout=10)
+        response = requests.get(API_URL,  timeout=1000)
         response.raise_for_status() 
         data = response.json() 
         if data["status"] != "OK":
