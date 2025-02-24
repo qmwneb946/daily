@@ -2,6 +2,8 @@
 
  | ID | 时间 | 题目 | 比赛 | 难度 | 标签 | 结果 | 测试用例 | 运行时间 | 内存消耗 |
  |----|------|-----|-----|------|-----|------|---------|--------|----------|
+ | 307530227 | 2025-02-24  20:49:19 | [Columns Swaps](https://codeforces.com/problemset/problem/1385/G) | 1385 | 2300 | 2-sat, dfs and similar, dsu, graphs, implementation | OK | 35 | 234ms | 25900KB |
+ | 307530060 | 2025-02-24  20:48:09 | [Columns Swaps](https://codeforces.com/problemset/problem/1385/G) | 1385 | 2300 | 2-sat, dfs and similar, dsu, graphs, implementation | COMPILATION_ERROR | 0 | 0ms | 0KB |
  | 307525461 | 2025-02-24  20:11:36 | [Color the Carpet](https://codeforces.com/problemset/problem/297/D) | 297 | 2500 | constructive algorithms | OK | 100 | 278ms | 15800KB |
  | 307524884 | 2025-02-24  20:07:10 | [Color the Carpet](https://codeforces.com/problemset/problem/297/D) | 297 | 2500 | constructive algorithms | WRONG_ANSWER | 0 | 62ms | 0KB |
  | 307524832 | 2025-02-24  20:06:46 | [Color the Carpet](https://codeforces.com/problemset/problem/297/D) | 297 | 2500 | constructive algorithms | WRONG_ANSWER | 0 | 30ms | 0KB |
