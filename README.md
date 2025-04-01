@@ -2,4 +2,5 @@
 
  | ID | 时间 | 题目 | 比赛 | 难度 | 标签 | 结果 | 测试用例 | 运行时间 | 内存消耗 |
  |----|------|-----|-----|------|-----|------|---------|--------|----------|
+ | 313338430 | 2025-04-01  17:00:17 | [K Integers](https://codeforces.com/problemset/problem/1268/C) | 1268 | 2300 | binary search, data structures | OK | 13 | 140ms | 1100KB |
  | 313331161 | 2025-04-01  15:52:10 | [Chain Chips](https://codeforces.com/problemset/problem/1814/E) | 1814 | 2300 | data structures, dp, matrices | OK | 65 | 312ms | 21500KB |
