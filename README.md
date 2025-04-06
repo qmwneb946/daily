@@ -2,6 +2,7 @@
 
  | ID | 时间 | 题目 | 比赛 | 难度 | 标签 | 结果 | 测试用例 | 运行时间 | 内存消耗 |
  |----|------|-----|-----|------|-----|------|---------|--------|----------|
+ | 314227702 | 2025-04-06  17:58:23 | [Game With Triangles](https://codeforces.com/problemset/problem/2063/D) | 2063 | 2000 | binary search, brute force, data structures, geometry, greedy, implementation, math, ternary search, two pointers | OK | 30 | 171ms | 1100KB |
  | 314227102 | 2025-04-06  17:53:08 | [Game With Triangles](https://codeforces.com/problemset/problem/2063/D) | 2063 | 2000 | binary search, brute force, data structures, geometry, greedy, implementation, math, ternary search, two pointers | RUNTIME_ERROR | 2 | 77ms | 0KB |
  | 314224999 | 2025-04-06  17:34:30 | [The Ultimate Wine Tasting Event](https://codeforces.com/problemset/problem/2068/J) | 2068 | 2000 | combinatorics, greedy | WRONG_ANSWER | 1 | 46ms | 0KB |
  | 314220797 | 2025-04-06  16:56:30 | [Gathering Sharks](https://codeforces.com/problemset/problem/2073/J) | 2073 | 2000 |  | OK | 21 | 186ms | 100KB |
