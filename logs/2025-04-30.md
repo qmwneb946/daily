@@ -2,6 +2,7 @@
 
  | ID | 时间 | 题目 | 比赛 | 难度 | 标签 | 结果 | 测试用例 | 运行时间 | 内存消耗 |
  |----|------|-----|-----|------|-----|------|---------|--------|----------|
+ | 317857572 | 2025-04-30  23:37:31 | [K-beautiful Strings](https://codeforces.com/problemset/problem/1493/C) | 1493 | 2000 | binary search, brute force, constructive algorithms, greedy, strings | OK | 36 | 249ms | 300KB |
  | 317855698 | 2025-04-30  23:19:24 | [K-beautiful Strings](https://codeforces.com/problemset/problem/1493/C) | 1493 | 2000 | binary search, brute force, constructive algorithms, greedy, strings | WRONG_ANSWER | 0 | 31ms | 0KB |
  | 317833721 | 2025-04-30  19:35:39 | [A Growing Tree](https://codeforces.com/problemset/problem/1891/F) | 1891 | 2000 | data structures, dfs and similar, trees | OK | 43 | 1625ms | 55600KB |
  | 317828462 | 2025-04-30  18:42:46 | [A Growing Tree](https://codeforces.com/problemset/problem/1891/F) | 1891 | 2000 | data structures, dfs and similar, trees | OK | 43 | 1515ms | 55600KB |
